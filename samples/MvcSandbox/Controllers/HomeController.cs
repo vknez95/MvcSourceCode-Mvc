@@ -14,5 +14,10 @@ namespace MvcSandbox.Controllers
         {
             return View();
         }
+
+        public IActionResult Splash()
+        {
+            return Content("This is the splash page!");
+        }
     }
 }

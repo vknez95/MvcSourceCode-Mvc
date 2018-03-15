@@ -1,11 +1,14 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MvcSandbox.Middleware;
 
 namespace MvcSandbox
 {
@@ -20,14 +23,42 @@ namespace MvcSandbox
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseDeveloperExceptionPage();
+            app.UseMiddleware<LoggingMiddleware>();
+
+            // app.Use(async (context, next) =>
+            // {
+            //     if (context.Request.Path.Value.Contains("home"))
+            //     {
+            //         await context.Response.WriteAsync("Response Generated From Use");
+            //     }
+            //     else
+            //     {
+            //         Debug.WriteLine("=== Before Run ===");
+            //         await next.Invoke();
+            //         Debug.WriteLine("=== After Run ===");
+            //     }
+            // });
+
+            // app.Run(async context =>
+            // {
+            //     Debug.WriteLine("=== During Run ====");
+            //     await context.Response.WriteAsync("The response from Run.");
+            // });
+
+            // app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
+            // app.UseMvc(routes =>
+            // {
+            //     routes.MapRoute(
+            //         name: "marketing",
+            //         template: "home/index",
+            //         defaults: new { controller = "home", action = "splash" });
+
+            //     routes.MapRoute(
+            //         name: "default",
+            //         template: "{controller=Home}/{action=Index}/{id?}");
+            // });
         }
 
         public static void Main(string[] args)
